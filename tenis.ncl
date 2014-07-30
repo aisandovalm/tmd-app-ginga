@@ -6,6 +6,8 @@
 			<region id="mainReg" height="100%" width="100%" zIndex="1">
 				<region id="matchReg" height="100%" width="100%" zIndex="2"/>
 				<region id="btnMenuReg" height="5%" width="40%" right="5%" bottom="5%" zIndex="3"/>
+				<region id="bio1VideoReg" height="50%" width="50%" left="0%" top="0%" zIndex="2"/>
+				<region id="bio2VideoReg" height="50%" width="50%" left="0%" top="0%" zIndex="2"/>
 			</region>
 		</regionBase>
 		
@@ -13,6 +15,8 @@
 			<descriptor id="mainDesc" region="mainReg"/>
 			<descriptor id="matchDesc" region="matchReg"/>
 			<descriptor id="btnMenuDesc" region="btnMenuReg"/>
+			<descriptor id="bio1VideoDesc" region="bio1VideoReg"/>
+			<descriptor id="bio2VideoDesc" region="bio2VideoReg"/>
 		</descriptorBase>
 
 		<connectorBase>
@@ -40,10 +44,22 @@
 				<simpleCondition role="onEnd"/>
 				<simpleAction role="start"/>
 			</causalConnector>
+			<causalConnector id="onEndStop">
+				<simpleCondition role="onEnd"/>
+				<simpleAction role="stop"/>
+			</causalConnector>
 			<causalConnector id="onEndSet">
 				<connectorParam name="resize_"/>
 				<simpleCondition role="onEnd"/>
 				<simpleAction role="set" value="$resize_"/>
+			</causalConnector>
+			<causalConnector id="onKeySelectionStopStart">
+				<connectorParam name="tecla"/>
+				<simpleCondition role="onSelection" key="$tecla"/>
+				<compoundAction operator="par">
+					<simpleAction role="stop"/>
+					<simpleAction role="start"/>
+				</compoundAction>
 			</causalConnector>
 		</connectorBase>
 	</head>
@@ -62,9 +78,9 @@
 
 		<media id="btnMenuMedia" src="./resources/images/buttons-menu.png" descriptor="btnMenuDesc"/>
 
-		<media id="btnStatsMedia" src="./resources/images/button-yellow.png" descriptor="btnStatsDesc"/>
+		<media id="bio1VideoMedia" src="./resources/bio1.mp4" descriptor="bio1VideoDesc"/>
 
-		<media id="btnBackMedia" src="./resources/images/Red.png" descriptor="btnBackDesc"/>
+		<media id="bio2VideoMedia" src="./resources/bio2.mp4" descriptor="bio2VideoDesc"/>
 
 		<!-- Al empezar el background, se inicia el video con el partido-->
 		<link xconnector="onBeginStart">
@@ -106,7 +122,7 @@
 			<bind role="onSelection" component="btnMenuMedia">
 				<bindParam name="tecla" value="RED"/>		
 			</bind>
-			<bind role="stop" component="btnMenuMedia"/>			
+			<bind role="stop" component="btnMenuMedia"/>		
 		</link>
 
 		<!-- Al sacar de pantalla el menú...-->
@@ -124,6 +140,64 @@
 			<bind role="set" component="matchMedia" interface="height">
 				<bindParam name="resize_" value="100%"/>
 			</bind>	
+		</link>
+
+		<!-- Al presionar el botón verde (F2) (Bio jugador 1) cuando se está en el modo menú...-->
+		<!-- Se elimina el video de la biografía del jugador 2-->
+		<!-- Se agrega el video de la biografía del jugador 1-->
+		<link xconnector="onKeySelectionStopStart">
+			<bind role="onSelection" component="btnMenuMedia">
+				<bindParam name="tecla" value="GREEN"/>
+			</bind>
+			<bind role="stop" component="bio2VideoMedia"/>
+			<bind role="start" component="bio1VideoMedia"/>	
+		</link>
+
+		<!-- Al presionar el botón azúl (F4) (Volver) cuando se está en el modo menú y el video de biografía del jugador 1 está en pantalla...-->
+		<!-- Se elimina el video de la biografía del jugador 1-->
+		<link xconnector="onKeySelectionStop">
+			<bind role="onSelection" component="btnMenuMedia">
+				<bindParam name="tecla" value="BLUE"/>
+			</bind>
+			<bind role="stop" component="bio1VideoMedia"/>	
+		</link>
+
+		<!-- Al presionar el botón amarillo (F3) (Bio jugador 2) cuando se está en el modo menú...-->
+		<!-- Se elimina el video de la biografía del jugador 2-->
+		<!-- Se agrega el video de la biografía del jugador 2-->
+		<link xconnector="onKeySelectionStopStart">
+			<bind role="onSelection" component="btnMenuMedia">
+				<bindParam name="tecla" value="YELLOW"/>
+			</bind>
+			<bind role="stop" component="bio1VideoMedia"/>	
+			<bind role="start" component="bio2VideoMedia"/>	
+		</link>
+
+		<!-- Al presionar el botón azúl (F4) (Volver) cuando se está en el modo menú y el video de biografía del jugador 2 está en pantalla...-->
+		<!-- Se elimina el video de la biografía del jugador 2-->
+		<link xconnector="onKeySelectionStop">
+			<bind role="onSelection" component="btnMenuMedia">
+				<bindParam name="tecla" value="BLUE"/>
+			</bind>
+			<bind role="stop" component="bio2VideoMedia"/>	
+		</link>
+
+		<!-- Al presionar el botón rojo (F1) (Salir) cuando se está en el modo bio jugador 1...-->
+		<!-- Se saca de pantalla el video de bio jugador 1-->
+		<link xconnector="onKeySelectionStop">
+			<bind role="onSelection" component="bio1VideoMedia">
+				<bindParam name="tecla" value="RED"/>		
+			</bind>
+			<bind role="stop" component="bio1VideoMedia"/>		
+		</link>
+
+		<!-- Al presionar el botón rojo (F1) (Salir) cuando se está en el modo bio jugador 2...-->
+		<!-- Se saca de pantalla el video de bio jugador 2-->
+		<link xconnector="onKeySelectionStop">
+			<bind role="onSelection" component="bio2VideoMedia">
+				<bindParam name="tecla" value="RED"/>		
+			</bind>
+			<bind role="stop" component="bio2VideoMedia"/>		
 		</link>
 
 
