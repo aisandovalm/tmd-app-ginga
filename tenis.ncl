@@ -5,6 +5,7 @@
 		<regionBase>
 			<region id="mainReg" height="100%" width="100%" zIndex="1">
 				<region id="matchReg" height="100%" width="100%" zIndex="2"/>
+				<region id="btnMenuReg" height="5%" width="40%" right="5%" bottom="5%" zIndex="3"/>
 				<region id="btnStatsReg" height="3%" width="3%" right="5%" bottom="5%" zIndex="3"/>
 				<region id="btnBackReg" height="3%" width="3%" right="10%" bottom="5%"  zIndex="3"/>
 			</region>
@@ -13,6 +14,7 @@
 		<descriptorBase>
 			<descriptor id="mainDesc" region="mainReg"/>
 			<descriptor id="matchDesc" region="matchReg"/>
+			<descriptor id="btnMenuDesc" region="btnMenuReg"/>
 			<descriptor id="btnStatsDesc" region="btnStatsReg"/>
 			<descriptor id="btnBackDesc" region="btnBackReg"/>
 		</descriptorBase>
@@ -46,13 +48,15 @@
 		<port component="background" id="entry"/>
 		<media id="background" src="./resources/images/background.jpg" descriptor="mainDesc">
 		</media>
-		<media id="matchMedia" src="./resources/partido.mp4" descriptor="matchDesc">
+		<media id="matchMedia" src="./resources/match.mp4" descriptor="matchDesc">
 			<!-- El video del partido se ajusta al tamaño de la pantalla completa-->
 			<property name="width" value="100%"/>
 			<property name="height" value="100%"/>
 			<property name="right" value="0%"/>
 			<property name="top" value="0%"/>
 		</media>	
+
+		<media id="btnMenuMedia" src="./resources/images/buttons-menu.png" descriptor="btnMenuDesc"/>
 
 		<media id="btnStatsMedia" src="./resources/images/button-yellow.png" descriptor="btnStatsDesc"/>
 
@@ -65,7 +69,7 @@
 
 		<link xconnector="onBeginStart">
 			<bind role="onBegin" component="background"/>
-			<bind role="start" component="btnStatsMedia"/>
+			<bind role="start" component="btnMenuMedia"/>
 		</link>
 
 		<link xconnector="onKeySelectionStop">
