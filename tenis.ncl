@@ -6,8 +6,6 @@
 			<region id="mainReg" height="100%" width="100%" zIndex="1">
 				<region id="matchReg" height="100%" width="100%" zIndex="2"/>
 				<region id="btnMenuReg" height="5%" width="40%" right="5%" bottom="5%" zIndex="3"/>
-				<region id="btnStatsReg" height="3%" width="3%" right="5%" bottom="5%" zIndex="3"/>
-				<region id="btnBackReg" height="3%" width="3%" right="10%" bottom="5%"  zIndex="3"/>
 			</region>
 		</regionBase>
 		
@@ -15,12 +13,13 @@
 			<descriptor id="mainDesc" region="mainReg"/>
 			<descriptor id="matchDesc" region="matchReg"/>
 			<descriptor id="btnMenuDesc" region="btnMenuReg"/>
-			<descriptor id="btnStatsDesc" region="btnStatsReg"/>
-			<descriptor id="btnBackDesc" region="btnBackReg"/>
 		</descriptorBase>
 
 		<connectorBase>
 			<causalConnector id="onKeySelectionStart">
+				<connectorParam name="tecla"/>
+				<simpleCondition role="onSelection" key="$tecla"/>
+				<simpleAction role="start"/>
 			</causalConnector>
 			<causalConnector id="onKeySelectionStop">
 				<connectorParam name="tecla"/>
@@ -40,6 +39,11 @@
 			<causalConnector id="onEndStart">
 				<simpleCondition role="onEnd"/>
 				<simpleAction role="start"/>
+			</causalConnector>
+			<causalConnector id="onEndSet">
+				<connectorParam name="resize_"/>
+				<simpleCondition role="onEnd"/>
+				<simpleAction role="set" value="$resize_"/>
 			</causalConnector>
 		</connectorBase>
 	</head>
@@ -62,31 +66,86 @@
 
 		<media id="btnBackMedia" src="./resources/images/Red.png" descriptor="btnBackDesc"/>
 
+		<!-- Al empezar el background, se inicia el video con el partido-->
 		<link xconnector="onBeginStart">
 			<bind role="onBegin" component="background"/>
 			<bind role="start" component="matchMedia"/>
 		</link>
 
-		<link xconnector="onBeginStart">
-			<bind role="onBegin" component="background"/>
-			<bind role="start" component="btnMenuMedia"/>
+		<!-- A presionar el botón rojo (F1), se ajusta el tamaño del video-->
+		<!-- Se ajusta el ancho-->
+		<link xconnector="onKeySelectionSet">
+			<bind role="onSelection" component="matchMedia">
+				<bindParam name="tecla" value="RED"/>
+			</bind>
+			<bind role="set" component="matchMedia" interface="width">
+				<bindParam name="resize" value="50%"/>
+			</bind>	
+		</link>
+		<!-- Se ajusta el alto-->
+		<link xconnector="onKeySelectionSet">
+			<bind role="onSelection" component="matchMedia">
+				<bindParam name="tecla" value="RED"/>
+			</bind>
+			<bind role="set" component="matchMedia" interface="height">
+				<bindParam name="resize" value="50%"/>
+			</bind>	
 		</link>
 
+		<!-- Al presionar el botón rojo (F1), se muestra el menú con los botones-->
+		<link xconnector="onKeySelectionStart">
+			<bind role="onSelection" component="matchMedia">
+				<bindParam name="tecla" value="RED"/>
+			</bind>
+			<bind role="start" component="btnMenuMedia"/>	
+		</link>
+
+		<!-- Al presionar el botón rojo (F1) (Salir) cuando se está en el modo menú...-->
+		<!-- Se saca de pantalla el menú de botones -->
+		<link xconnector="onKeySelectionStop">
+			<bind role="onSelection" component="btnMenuMedia">
+				<bindParam name="tecla" value="RED"/>		
+			</bind>
+			<bind role="stop" component="btnMenuMedia"/>			
+		</link>
+
+		<!-- Al sacar de pantalla el menú...-->
+		<!-- Se reajusta el tamaño del video del partido-->
+		<!-- Se ajusta el ancho-->
+		<link xconnector="onEndSet">
+			<bind role="onEnd" component="btnMenuMedia"/>
+			<bind role="set" component="matchMedia" interface="width">
+				<bindParam name="resize_" value="100%"/>
+			</bind>	
+		</link>
+		<!-- Se ajusta el ancho-->
+		<link xconnector="onEndSet">
+			<bind role="onEnd" component="btnMenuMedia"/>
+			<bind role="set" component="matchMedia" interface="height">
+				<bindParam name="resize_" value="100%"/>
+			</bind>	
+		</link>
+
+
+		<!-- Se ajusta el alto-->
+		<!--
+		<link xconnector="onKeySelectionSet">
+			<bind role="onSelection" component="btnMenuMedia">
+				<bindParam name="tecla" value="RED"/>
+			</bind>
+			<bind role="set" component="matchMedia" interface="height">
+				<bindParam name="resize" value="100%"/>
+			</bind>	
+		</link>
+		-->
+
+		<!--
 		<link xconnector="onKeySelectionStop">
 			<bind role="onSelection" component="btnStatsMedia">
 				<bindParam name="tecla" value="GREEN"/>		
 			</bind>
 			<bind role="stop" component="btnStatsMedia"/>			
-		</link>
-		
-		<link xconnector="onKeySelectionSet">
-			<bind role="onSelection" component="matchMedia">
-				<bindParam name="tecla" value="GREEN"/>
-			</bind>
-			<bind role="set" component="matchMedia" interface="width">
-				<bindParam name="resize" value="50%"/>
-			</bind>		
-		</link>
+		</link>		
 
 		<link xconnector="onKeySelectionSet">
 			<bind role="onSelection" component="matchMedia">
@@ -127,5 +186,6 @@
 			<bind role="stop" component="btn2">
 			</bind>				
 		</link>	
+	-->
 	</body>
 </ncl>
