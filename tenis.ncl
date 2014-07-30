@@ -5,16 +5,15 @@
 		<regionBase>
 			<region id="mainReg" height="100%" width="100%" zIndex="1">
 				<region id="matchReg" height="100%" width="100%" zIndex="2"/>
-
-				<!-- Aparecerá un botón con un mensaje indicando que debe ser apretado
-						para salir de las estadísticas y volver al partido en pantalla completa-->
-				<region id="btnBackReg" height="10%" width="10%" left="5%" top="90%" zIndex="2"/>
+				<region id="btnStatsReg" height="3%" width="3%" right="5%" bottom="5%" zIndex="3"/>
+				<region id="btnBackReg" height="3%" width="3%" right="10%" bottom="5%"  zIndex="3"/>
 			</region>
 		</regionBase>
 		
 		<descriptorBase>
 			<descriptor id="mainDesc" region="mainReg"/>
 			<descriptor id="matchDesc" region="matchReg"/>
+			<descriptor id="btnStatsDesc" region="btnStatsReg"/>
 			<descriptor id="btnBackDesc" region="btnBackReg"/>
 		</descriptorBase>
 
@@ -55,7 +54,9 @@
 			<property name="top" value="0%"/>
 		</media>	
 
-		<media id="btn1" src="./resources/images/button-green.jpg" descriptor="btnBackDesc"/>
+		<media id="btnStatsMedia" src="./resources/images/button-yellow.png" descriptor="btnStatsDesc"/>
+
+		<media id="btnBackMedia" src="./resources/images/Red.png" descriptor="btnBackDesc"/>
 
 		<link xconnector="onBeginStart">
 			<bind role="onBegin" component="background"/>
@@ -63,15 +64,15 @@
 		</link>
 
 		<link xconnector="onBeginStart">
-			<bind role="onBegin" component="background" interface="btnOn"/>
-			<bind role="start" component="btn1"/>
+			<bind role="onBegin" component="background"/>
+			<bind role="start" component="btnStatsMedia"/>
 		</link>
 
 		<link xconnector="onKeySelectionStop">
-			<bind role="onSelection" component="btn1">
+			<bind role="onSelection" component="btnStatsMedia">
 				<bindParam name="tecla" value="GREEN"/>		
 			</bind>
-			<bind role="stop" component="btn1"/>			
+			<bind role="stop" component="btnStatsMedia"/>			
 		</link>
 		
 		<link xconnector="onKeySelectionSet">
@@ -111,7 +112,7 @@
 		</link>
 
 		<link xconnector="onEndStart">
-			<bind role="onEnd" component="btn1"/>
+			<bind role="onEnd" component="btnStatsMedia"/>
 			<bind role="start" component="btn2"/>					
 		</link>
 
