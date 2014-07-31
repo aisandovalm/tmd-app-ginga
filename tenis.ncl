@@ -8,6 +8,8 @@
 				<region id="btnMenuReg" height="5%" width="40%" right="5%" bottom="5%" zIndex="3"/>
 				<region id="bio1VideoReg" height="50%" width="50%" left="0%" top="0%" zIndex="2"/>
 				<region id="bio2VideoReg" height="50%" width="50%" left="0%" top="0%" zIndex="2"/>
+
+				<region id="rgOutput1" width="50%" height="50%" bottom="0%" left="0%" zindex="2"/>
 			</region>
 		</regionBase>
 		
@@ -17,6 +19,7 @@
 			<descriptor id="btnMenuDesc" region="btnMenuReg"/>
 			<descriptor id="bio1VideoDesc" region="bio1VideoReg"/>
 			<descriptor id="bio2VideoDesc" region="bio2VideoReg"/>
+			<descriptor id="dsOutput1" region="rgOutput1"/>
 		</descriptorBase>
 
 		<connectorBase>
@@ -61,6 +64,11 @@
 					<simpleAction role="start"/>
 				</compoundAction>
 			</causalConnector>
+			<causalConnector id="onBeginSet">
+				<connectorParam name="var"/>
+				<simpleCondition role="onBegin"/>
+				<simpleAction role="set" value="$var"/>
+			</causalConnector>
 		</connectorBase>
 	</head>
 
@@ -81,6 +89,10 @@
 		<media id="bio1VideoMedia" src="./resources/bio1.mp4" descriptor="bio1VideoDesc"/>
 
 		<media id="bio2VideoMedia" src="./resources/bio2.mp4" descriptor="bio2VideoDesc"/>
+
+		<media id="output1" src="output.lua" descriptor="dsOutput1">
+			<property name="text"/>
+		</media>
 
 		<!-- Al empezar el background, se inicia el video con el partido-->
 		<link xconnector="onBeginStart">
@@ -200,66 +212,19 @@
 			<bind role="stop" component="bio2VideoMedia"/>		
 		</link>
 
-
-		<!-- Se ajusta el alto-->
-		<!--
-		<link xconnector="onKeySelectionSet">
-			<bind role="onSelection" component="btnMenuMedia">
-				<bindParam name="tecla" value="RED"/>
-			</bind>
-			<bind role="set" component="matchMedia" interface="height">
-				<bindParam name="resize" value="100%"/>
-			</bind>	
+		<!-- Al iniciar el menu de botones...-->
+		<!-- Se inicia el componente del texto con las estadísticas -->
+		<link xconnector="onBeginStart">
+			<bind role="onBegin" component="btnMenuMedia"/>
+			<bind role="start" component="output1"/>
 		</link>
-		-->
-
-		<!--
-		<link xconnector="onKeySelectionStop">
-			<bind role="onSelection" component="btnStatsMedia">
-				<bindParam name="tecla" value="GREEN"/>		
+		<!-- Se setea texto -->
+		<link xconnector="onBeginSet">
+			<bind role="onBegin" component="btnMenuMedia"/>
+			<bind role="set" component="output1" interface="text">
+				<bindParam name="var" value="$get"/>
 			</bind>
-			<bind role="stop" component="btnStatsMedia"/>			
-		</link>		
-
-		<link xconnector="onKeySelectionSet">
-			<bind role="onSelection" component="matchMedia">
-				<bindParam name="tecla" value="GREEN"/>
-			</bind>
-			<bind role="set" component="matchMedia" interface="height">
-				<bindParam name="resize" value="50%"/>
-			</bind>		
 		</link>
 
-		<link xconnector="onKeySelectionSet">
-			<bind role="onSelection" component="matchMedia">
-				<bindParam name="tecla" value="GREEN"/>
-			</bind>
-			<bind role="set" component="matchMedia" interface="right">
-				<bindParam name="resize" value="0%"/>
-			</bind>		
-		</link>
-
-		<link xconnector="onKeySelectionSet">
-			<bind role="onSelection" component="matchMedia">
-				<bindParam name="tecla" value="GREEN"/>
-			</bind>
-			<bind role="set" component="matchMedia" interface="top">
-				<bindParam name="resize" value="0%"/>
-			</bind>		
-		</link>
-
-		<link xconnector="onEndStart">
-			<bind role="onEnd" component="btnStatsMedia"/>
-			<bind role="start" component="btn2"/>					
-		</link>
-
-		<link xconnector="onKeySelectionStop">
-			<bind role="onSelection" component="btn2">
-				<bindParam name="tecla" value="RED"/>		
-			</bind>
-			<bind role="stop" component="btn2">
-			</bind>				
-		</link>	
-	-->
 	</body>
 </ncl>
