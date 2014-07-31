@@ -1,15 +1,26 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <ncl id="topProperty" xmlns="http://www.ncl.org.br/NCL3.0/EDTVProfile">
 	<head>
-		
 		<regionBase>
 			<region id="mainReg" height="100%" width="100%" zIndex="1">
+				<!--Región video del partido-->
 				<region id="matchReg" height="100%" width="100%" zIndex="2"/>
-				<region id="btnMenuReg" height="5%" width="40%" right="5%" bottom="5%" zIndex="3"/>
+				<!--Región menu botones-->
+				<region id="btnMenuReg" height="5%" width="40%" right="5%" bottom="4%" zIndex="3"/>
+				<!--Región video biografía jugador 1-->
 				<region id="bio1VideoReg" height="50%" width="50%" left="0%" top="0%" zIndex="2"/>
+				<!--Región video biografía jugador 2-->
 				<region id="bio2VideoReg" height="50%" width="50%" left="0%" top="0%" zIndex="2"/>
-
-				<region id="rgOutput1" width="50%" height="50%" bottom="0%" left="0%" zindex="2"/>
+				<!--Región para profiles-->
+				<region id="profilesReg" height="50%" width="48%" left="1%" top="0%" zIndex="2">
+					<!--Región de output desde archivo lua con datos de profile-->
+					<region id="outputProfileReg" width="100%" height="100%" top="0%" left="0%" zindex="4"/>
+				</region>
+				<!--Región para datos de jugadores-->
+				<region id="datosReg" width="100%" height="40%" bottom="9%" left="0%" zindex="2">
+					<!--Región de output desde archivo lua con datos de jugadores-->
+					<region id="rgOutput1" width="100%" height="100%" bottom="0%" left="0%" zindex="4"/>
+				</region>
 			</region>
 		</regionBase>
 		
@@ -19,6 +30,9 @@
 			<descriptor id="btnMenuDesc" region="btnMenuReg"/>
 			<descriptor id="bio1VideoDesc" region="bio1VideoReg"/>
 			<descriptor id="bio2VideoDesc" region="bio2VideoReg"/>
+			<descriptor id="profilesDesc" region="profilesReg"/>
+			<descriptor id="outputProfileDesc" region="outputProfileReg"/>
+			<descriptor id="datosDesc" region="datosReg"/>
 			<descriptor id="dsOutput1" region="rgOutput1"/>
 		</descriptorBase>
 
@@ -74,6 +88,7 @@
 
 	<body>
 		<port component="background" id="entry"/>
+		<!--Imagen de fondo de la aplicación-->
 		<media id="background" src="./resources/images/background.jpg" descriptor="mainDesc">
 		</media>
 		<media id="matchMedia" src="./resources/match.mp4" descriptor="matchDesc">
@@ -84,15 +99,30 @@
 			<property name="top" value="0%"/>
 		</media>	
 
+		<!--Imagen con el menu de los botones-->
 		<media id="btnMenuMedia" src="./resources/images/buttons-menu.png" descriptor="btnMenuDesc"/>
 
+		<!--Video de biografía 1-->
 		<media id="bio1VideoMedia" src="./resources/bio1.mp4" descriptor="bio1VideoDesc"/>
 
+		<!--Video de biografía 2-->
 		<media id="bio2VideoMedia" src="./resources/bio2.mp4" descriptor="bio2VideoDesc"/>
 
-		<media id="output1" src="output.lua" descriptor="dsOutput1">
+		<!--Archivo lua que entrega datos con profile de los jugadores-->
+		<media id="output2" src="profile.lua" descriptor="outputProfileDesc">
 			<property name="text"/>
 		</media>
+
+		<!--Archivo lua que entrega datos con información de los jugadores-->
+		<media id="output1" src="datos.lua" descriptor="dsOutput1">
+			<property name="text"/>
+		</media>
+
+		<!--Imagen de fondo para los datos de jugadores-->
+		<media id="datosMedia" src="./resources/images/camposDatos.png" descriptor="datosDesc"/>
+
+		<!--Imagen de fondo para el profile de jugadores-->
+		<media id="profilesMedia" src="./resources/images/profiles.png" descriptor="profilesDesc"/>
 
 		<!-- Al empezar el background, se inicia el video con el partido-->
 		<link xconnector="onBeginStart">
@@ -212,19 +242,49 @@
 			<bind role="stop" component="bio2VideoMedia"/>		
 		</link>
 
-		<!-- Al iniciar el menu de botones...-->
-		<!-- Se inicia el componente del texto con las estadísticas -->
+		<!-- Al iniciar el menu de botones...-->	
+		<!-- Se pone en pantalla el fondo de los datos -->
 		<link xconnector="onBeginStart">
 			<bind role="onBegin" component="btnMenuMedia"/>
-			<bind role="start" component="output1"/>
+			<bind role="start" component="datosMedia"/>
 		</link>
-		<!-- Se setea texto -->
-		<link xconnector="onBeginSet">
+		<!-- Se pone en pantalla el profile de los jugadores -->
+		<link xconnector="onBeginStart">
 			<bind role="onBegin" component="btnMenuMedia"/>
-			<bind role="set" component="output1" interface="text">
-				<bindParam name="var" value="$get"/>
-			</bind>
+			<bind role="start" component="profilesMedia"/>
 		</link>
 
+		<!-- Al sacar el menu de botones tb salen los datos-->
+		<link xconnector="onEndStop">
+			<bind role="onEnd" component="btnMenuMedia"/>
+			<bind role="stop" component="datosMedia"/>
+		</link>
+		<!-- ... y los profiles-->
+		<link xconnector="onEndStop">
+			<bind role="onEnd" component="btnMenuMedia"/>
+			<bind role="stop" component="profilesMedia"/>
+		</link>
+
+		<!-- Se inicia el componente del texto con los datos-->
+		<link xconnector="onBeginStart">
+			<bind role="onBegin" component="profilesMedia"/>
+			<bind role="start" component="output1"/>
+		</link>
+
+		<!-- Se inicia el componente del texto con los datos-->
+		<link xconnector="onBeginStart">
+			<bind role="onBegin" component="profilesMedia"/>
+			<bind role="start" component="output2"/>
+		</link>
+
+		<link xconnector="onEndStop">
+			<bind role="onEnd" component="profilesMedia"/>
+			<bind role="stop" component="output2"/>
+		</link>
+
+		<link xconnector="onEndStop">
+			<bind role="onEnd" component="datosMedia"/>
+			<bind role="stop" component="output1"/>
+		</link>
 	</body>
 </ncl>
